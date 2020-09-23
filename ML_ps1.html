@@ -396,13 +396,24 @@ summary {
 <h3>2. Flexible models versus inflexible models (1 pt)</h3>
 <ol style="list-style-type: lower-alpha">
 <li>I have two models, one with high bias and variance and one with low bias and low variance. I should choose the model with high bias. True or False?</li>
+</ol>
+<p>FALSE - ideally we should have low bias and low variance.</p>
+<ol start="2" style="list-style-type: lower-alpha">
 <li>KNN and linear regression are both parametric models, as they both have decision rules. True or False?</li>
+</ol>
+<p>FALSE - linear regression is parametric but KNN is not.</p>
+<ol start="3" style="list-style-type: lower-alpha">
 <li>A second order polynomial will always have lower bias than a linear model. True or False?</li>
+</ol>
+<p>TRUE - but it might have a higher variance due to overfitting, depending on the data.</p>
+<ol start="4" style="list-style-type: lower-alpha">
 <li>We should run our model multiple times and pick the one with the lowest test error. True or False?</li>
 </ol>
+<p>TRUE</p>
 <ol start="3" style="list-style-type: decimal">
 <li>In two sentences or less, describe the bias variance tradeoff. (1 pt)</li>
 </ol>
+<p>Variance is the amount by which <span class="math inline">\(\hat{f}\)</span> changes if estimated using different training data and bias is the error that is introduced when an overly simplistic model is used on a more complet dataset. A tradeoff occurs when, as we use more flexible models that better fit our data, variance increases while bias decreases.</p>
 </div>
 </div>
 

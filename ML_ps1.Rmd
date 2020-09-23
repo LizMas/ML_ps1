@@ -42,21 +42,29 @@ total portfolio amount, whether the proposal was accepted, etc.
 This question is a classification question because the output variables are categorical or discrete. Here, we are interested in inference because we are using existing data to look at the effects within that data.  
 
 ### 2. Flexible models versus inflexible models (1 pt)
+
 (a) I have two models, one with high bias and variance and one with low bias and low
 variance. I should choose the model with high bias. True or False?
+
+FALSE - ideally we should have low bias and low variance. 
+
 (b) KNN and linear regression are both parametric models, as they both have decision rules.
 True or False?
+
+FALSE - linear regression is parametric but KNN is not. 
+
 (c) A second order polynomial will always have lower bias than a linear model. True or
 False?
+
+TRUE - but it might have a higher variance due to overfitting, depending on the data. 
+
+
 (d) We should run our model multiple times and pick the one with the lowest test error.
 True or False?
+
+TRUE
+
 3. In two sentences or less, describe the bias variance tradeoff. (1 pt)
 
-
-
-```{r}
-
-
-
-```
+Variance is the amount by which $\hat{f}$ changes if estimated using different training data and bias is the error that is introduced when an overly simplistic model is used on a more complet dataset. A tradeoff occurs when, as we use more flexible models that better fit our data, variance increases while bias decreases. 
 
