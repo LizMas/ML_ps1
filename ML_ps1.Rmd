@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+library(AER)
 library(tidyverse)
 
 ```
@@ -67,4 +68,63 @@ TRUE
 3. In two sentences or less, describe the bias variance tradeoff. (1 pt)
 
 Variance is the amount by which $\hat{f}$ changes if estimated using different training data and bias is the error that is introduced when an overly simplistic model is used on a more complet dataset. A tradeoff occurs when, as we use more flexible models that better fit our data, variance increases while bias decreases. 
+
+# Data Questions
+
+```{r}
+
+CAS <- data(CASchools)
+
+#to find number of observations and variables: 
+
+
+#dim(CAS) 
+
+#to find data type contained w/in each column: 
+
+#str(CAS)
+
+#to find values missing: 
+
+#map(CAS, ~sum(is.na(.)))
+
+#find mean of students: 
+
+#mean(CAS$students)
+
+#find standard deviation of number of computers: 
+
+#sd(CAS$computer)
+
+# How many observations would it drop if you limited the sample to schools with 500+ students?:
+
+#drop <- CAS %>% 
+#        filter(students >= 500) %>% 
+#        nrow()
+
+```
+
+1. How many observations are in the dataset? (0.5 pts): 420 observations
+
+2. How many variables are in the dataset? (0.5 pts): 14 variables 
+
+3. Are any of the columns categorical? (0.5 pts): Yes, 4 - District (chr), School (chr), County (factor), and Grades (factor). The rest are numeric. 
+
+4. Are any values missing? (0.5 pts): No.
+
+5. What is the mean number of students in the school? (0.5 pts): 2628.79
+
+6. What is the standard deviation of number of computers? (0.5 pts): 441.34
+
+7. What does the calworks variable measure? Hint: Read the codebook! (0.5 pts): "Percent qualifying for CalWorks (income assistance)" 
+
+8. How many observations would it drop if you limited the sample to schools with 500+ students? (0.5 pts): We are left with 281 rows, meaning that we dropped 139 rows.  
+
+### Sort the data by number of students (ascending) and put the first 80 in the test set and
+the last 200 in the training set. Include only the following variables in the test/training set:
+students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our
+outcome variable is going to be the reading scores.
+
+
+
 

@@ -416,6 +416,23 @@ summary {
 <p>Variance is the amount by which <span class="math inline">\(\hat{f}\)</span> changes if estimated using different training data and bias is the error that is introduced when an overly simplistic model is used on a more complet dataset. A tradeoff occurs when, as we use more flexible models that better fit our data, variance increases while bias decreases.</p>
 </div>
 </div>
+<div id="data-questions" class="section level1">
+<h1>Data Questions</h1>
+<ol style="list-style-type: decimal">
+<li><p>How many observations are in the dataset? (0.5 pts): 420 observations</p></li>
+<li><p>How many variables are in the dataset? (0.5 pts): 14 variables</p></li>
+<li><p>Are any of the columns categorical? (0.5 pts): Yes, 4 - District (chr), School (chr), County (factor), and Grades (factor). The rest are numeric.</p></li>
+<li><p>Are any values missing? (0.5 pts): No.</p></li>
+<li><p>What is the mean number of students in the school? (0.5 pts): 2628.79</p></li>
+<li><p>What is the standard deviation of number of computers? (0.5 pts): 441.34</p></li>
+<li><p>What does the calworks variable measure? Hint: Read the codebook! (0.5 pts): “Percent qualifying for CalWorks (income assistance)”</p></li>
+<li><p>How many observations would it drop if you limited the sample to schools with 500+ students? (0.5 pts): We are left with 281 rows, meaning that we dropped 139 rows.</p></li>
+</ol>
+<div id="sort-the-data-by-number-of-students-ascending-and-put-the-first-80-in-the-test-set-and" class="section level3">
+<h3>Sort the data by number of students (ascending) and put the first 80 in the test set and</h3>
+<p>the last 200 in the training set. Include only the following variables in the test/training set: students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our outcome variable is going to be the reading scores.</p>
+</div>
+</div>
 
 
 
