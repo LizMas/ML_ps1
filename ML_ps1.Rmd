@@ -1,0 +1,62 @@
+---
+title: "API 222 Problem Set 1"
+author: "Liz Masten"
+date: "9/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+
+```
+
+# Conceptual Questions 
+
+### 1. For each of the following questions, state: (6 pts)
+##### (1) Whether it is a regression question or a classification question
+##### (2) Whether we are interested in inference or prediction
+     
+(a) The New York City Mayor’s Office plans to solicit construction bids for a school renovation project. They want to know if each bid will be finished on time. They have past
+data on NYC construction bids, including information on project type, construction
+company characteristics, budget estimates and whether the bid was finished on time.
+
+This question is a classification question because the output variable ("finished on time") is discrete. This is discrete because the projects will be either finished on time or they won't be. We are interested in prediction here because we are using existing data (the past data on NYC construction bids) to predict outcomes revolving around new information (the new construction bids). 
+
+(b) The mayors office also care about the budget considerations. Officials want to avoid
+projects that understate their true budget and pick bids that will have final spending
+close to the proposed budget. The vast majority of projects are over budget, so the
+office wants to know to how much over budget each potential bid will be.
+
+This question is a regression question because the outcome variable (how much over budget) is continuous. We are interested in prediction again because we are still using data on past construction bids to predict by how much each new bid will be over budget. 
+
+(c) The mayor noticed that local contractors seemed to win more construction bids. The
+mayor was interested in if local contractors are better at assessing the needs of the
+community or if political connections were driving this trend. The mayor decided to
+implement a blind submission process where the location and name of the firm are hidden for two years. He wants you to analyze whether blind hiring changes the likelihood
+of a local bid being chosen. For each proposal for the last 10 years, you have details on
+year submitted, location, number of employees, firm age, number of previous contracts,
+total portfolio amount, whether the proposal was accepted, etc.
+
+This question is a classification question because the output variables are categorical or discrete. Here, we are interested in inference because we are using existing data to look at the effects within that data.  
+
+### 2. Flexible models versus inflexible models (1 pt)
+(a) I have two models, one with high bias and variance and one with low bias and low
+variance. I should choose the model with high bias. True or False?
+(b) KNN and linear regression are both parametric models, as they both have decision rules.
+True or False?
+(c) A second order polynomial will always have lower bias than a linear model. True or
+False?
+(d) We should run our model multiple times and pick the one with the lowest test error.
+True or False?
+3. In two sentences or less, describe the bias variance tradeoff. (1 pt)
+
+
+
+```{r}
+
+
+
+```
+
