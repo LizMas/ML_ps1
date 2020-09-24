@@ -419,18 +419,158 @@ summary {
 <div id="data-questions" class="section level1">
 <h1>Data Questions</h1>
 <ol style="list-style-type: decimal">
-<li><p>How many observations are in the dataset? (0.5 pts): 420 observations</p></li>
+<li><p>How many observations are in the dataset? (0.5 pts): 420 observations.</p></li>
 <li><p>How many variables are in the dataset? (0.5 pts): 14 variables</p></li>
-<li><p>Are any of the columns categorical? (0.5 pts): Yes, 4 - District (chr), School (chr), County (factor), and Grades (factor). The rest are numeric.</p></li>
-<li><p>Are any values missing? (0.5 pts): No.</p></li>
-<li><p>What is the mean number of students in the school? (0.5 pts): 2628.79</p></li>
-<li><p>What is the standard deviation of number of computers? (0.5 pts): 441.34</p></li>
+</ol>
+<pre class="r"><code>data(&quot;CASchools&quot;)
+
+#commented out because this doesn&#39;t need to show up in the html: 
+
+#dim(CASchools)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Are any of the columns categorical? (0.5 pts): Yes, 4 - District (chr), School (chr), County (factor), and Grades (factor). The rest are numeric.</li>
+</ol>
+<pre class="r"><code>str(CASchools)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    420 obs. of  14 variables:
+##  $ district   : chr  &quot;75119&quot; &quot;61499&quot; &quot;61549&quot; &quot;61457&quot; ...
+##  $ school     : chr  &quot;Sunol Glen Unified&quot; &quot;Manzanita Elementary&quot; &quot;Thermalito Union Elementary&quot; &quot;Golden Feather Union Elementary&quot; ...
+##  $ county     : Factor w/ 45 levels &quot;Alameda&quot;,&quot;Butte&quot;,..: 1 2 2 2 2 6 29 11 6 25 ...
+##  $ grades     : Factor w/ 2 levels &quot;KK-06&quot;,&quot;KK-08&quot;: 2 2 2 2 2 2 2 2 2 1 ...
+##  $ students   : num  195 240 1550 243 1335 ...
+##  $ teachers   : num  10.9 11.1 82.9 14 71.5 ...
+##  $ calworks   : num  0.51 15.42 55.03 36.48 33.11 ...
+##  $ lunch      : num  2.04 47.92 76.32 77.05 78.43 ...
+##  $ computer   : num  67 101 169 85 171 25 28 66 35 0 ...
+##  $ expenditure: num  6385 5099 5502 7102 5236 ...
+##  $ income     : num  22.69 9.82 8.98 8.98 9.08 ...
+##  $ english    : num  0 4.58 30 0 13.86 ...
+##  $ read       : num  692 660 636 652 642 ...
+##  $ math       : num  690 662 651 644 640 ...</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Are any values missing? (0.5 pts): No.</li>
+</ol>
+<pre class="r"><code>map(CASchools, ~sum(is.na(.)))</code></pre>
+<pre><code>## $district
+## [1] 0
+## 
+## $school
+## [1] 0
+## 
+## $county
+## [1] 0
+## 
+## $grades
+## [1] 0
+## 
+## $students
+## [1] 0
+## 
+## $teachers
+## [1] 0
+## 
+## $calworks
+## [1] 0
+## 
+## $lunch
+## [1] 0
+## 
+## $computer
+## [1] 0
+## 
+## $expenditure
+## [1] 0
+## 
+## $income
+## [1] 0
+## 
+## $english
+## [1] 0
+## 
+## $read
+## [1] 0
+## 
+## $math
+## [1] 0</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>What is the mean number of students in the school? (0.5 pts): 2628.79</li>
+</ol>
+<pre class="r"><code>mean(CASchools$students)</code></pre>
+<pre><code>## [1] 2628.793</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>What is the standard deviation of number of computers? (0.5 pts): 441.34</li>
+</ol>
+<pre class="r"><code>sd(CASchools$computer)</code></pre>
+<pre><code>## [1] 441.3413</code></pre>
+<ol start="7" style="list-style-type: decimal">
 <li><p>What does the calworks variable measure? Hint: Read the codebook! (0.5 pts): “Percent qualifying for CalWorks (income assistance)”</p></li>
 <li><p>How many observations would it drop if you limited the sample to schools with 500+ students? (0.5 pts): We are left with 281 rows, meaning that we dropped 139 rows.</p></li>
 </ol>
+<pre class="r"><code>drop &lt;- CASchools %&gt;% 
+        filter(students &gt;= 500) %&gt;% 
+        nrow()
+
+drop</code></pre>
+<pre><code>## [1] 281</code></pre>
 <div id="sort-the-data-by-number-of-students-ascending-and-put-the-first-80-in-the-test-set-and" class="section level3">
 <h3>Sort the data by number of students (ascending) and put the first 80 in the test set and</h3>
 <p>the last 200 in the training set. Include only the following variables in the test/training set: students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our outcome variable is going to be the reading scores.</p>
+<pre class="r"><code>CASchools$students &lt;- as.numeric(CASchools$students)
+
+order &lt;-CASchools %&gt;% 
+        arrange(students) %&gt;% 
+        select(students, teachers, calworks, lunch, computer, expenditure, income, english, read)
+
+test_CAS &lt;- order[1:80,]
+  
+training_CAS &lt;- order[220-420,]</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Is there anything wrong with how we split our data into training and test datasets? (Note: do not change your dataset splits, this is purely a theoretical question) (0.5 pts)</li>
+</ol>
+<p>Yes, this is not good practice for actual randomization because it’s not random. We might be training the data on patterns in the dataset by virtue of observation order rather than a representative sample of our data. If we were doing this for real, we would use the sample() function.</p>
+<ol start="10" style="list-style-type: decimal">
+<li>When you use your training data to build a linear model that regresses reading score on all other variables available in the data (plus an intercept), what is your test Mean Squared Error? (0.5 pts): MSE = 66.93</li>
+</ol>
+<pre class="r"><code>#build linear model: 
+
+model_10 &lt;- lm(read ~ students + teachers + calworks + lunch + computer + expenditure + income + english, data = training_CAS)
+
+#find MSE: 
+
+anova(model_10)[&#39;Residuals&#39;, &#39;Mean Sq&#39;]</code></pre>
+<pre><code>## [1] 66.93064</code></pre>
+<ol start="11" style="list-style-type: decimal">
+<li>Now use your training data to build a linear model that regresses reading scores on number of students, teachers, and computers. What is the coefficient on computers (include an intercept). (0.5 pts): The intercept is 656.72 and the coefficient of computer is 0.02</li>
+</ol>
+<pre class="r"><code>model_11 &lt;- lm(read ~ students + teachers + computer, data = training_CAS)</code></pre>
+<ol start="12" style="list-style-type: decimal">
+<li>Now do the same thing but regress reading scores on number of students, teachers, income, and computers (again, include an intercept). (0.5 pts) • What is the coefficient on computers now?: 0.01 (more specifically, 0.008396) • What does that imply about the relationship between computers and income and reading scores and income?: For each one unit increase in reading score, income also increases by about 1.95. Number of computers and income are also positively correlated to reading scores, but since this regression is concerned with reading scores, it is better to say that as reading scores increase, income and number of computers also increases.</li>
+</ol>
+<pre class="r"><code>model_12 &lt;- lm(read ~ students + teachers + income + computer, data = training_CAS)</code></pre>
+<ol start="13" style="list-style-type: decimal">
+<li>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 5? (0.5 pts): 234.64</li>
+</ol>
+<pre class="r"><code># read scores are the 9th column
+
+knn_m1    &lt;- knn.reg(training_CAS[,-9],
+                     test_CAS[,-9],
+                     training_CAS[,9],
+                     k = 1)
+
+knn_m5   &lt;- knn.reg(training_CAS[,-9],
+                    test_CAS[,-9],
+                    training_CAS[,9],
+                    k = 5)
+
+#find MSE: 
+
+mse_knn5 &lt;- mean((knn_m5$pred - test_CAS[,9])^2)</code></pre>
+<p>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 10? (0.5 pts): 304.36</p>
+<pre class="r"><code>knn_m10   &lt;- knn.reg(training_CAS[,-9],
+                    test_CAS[,-9],
+                    training_CAS[,9],
+                    k = 10)
+
+mse_knn10 &lt;- mean((knn_m10$pred - test_CAS[,9])^2)</code></pre>
 </div>
 </div>
 

@@ -6,9 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 
 library(AER)
+library(class)
+library(FNN)
 library(tidyverse)
 
 ```
@@ -71,59 +73,175 @@ Variance is the amount by which $\hat{f}$ changes if estimated using different t
 
 # Data Questions
 
-```{r}
-
-CAS <- data(CASchools)
-
-#to find number of observations and variables: 
-
-
-#dim(CAS) 
-
-#to find data type contained w/in each column: 
-
-#str(CAS)
-
-#to find values missing: 
-
-#map(CAS, ~sum(is.na(.)))
-
-#find mean of students: 
-
-#mean(CAS$students)
-
-#find standard deviation of number of computers: 
-
-#sd(CAS$computer)
-
-# How many observations would it drop if you limited the sample to schools with 500+ students?:
-
-#drop <- CAS %>% 
-#        filter(students >= 500) %>% 
-#        nrow()
-
-```
-
-1. How many observations are in the dataset? (0.5 pts): 420 observations
+1. How many observations are in the dataset? (0.5 pts): 420 observations.
 
 2. How many variables are in the dataset? (0.5 pts): 14 variables 
 
+```{r}
+
+data("CASchools")
+
+#commented out because this doesn't need to show up in the html: 
+
+#dim(CASchools)
+
+```
+
+
 3. Are any of the columns categorical? (0.5 pts): Yes, 4 - District (chr), School (chr), County (factor), and Grades (factor). The rest are numeric. 
+
+```{r}
+
+str(CASchools)
+
+```
 
 4. Are any values missing? (0.5 pts): No.
 
+```{r}
+
+map(CASchools, ~sum(is.na(.)))
+
+```
+
+
 5. What is the mean number of students in the school? (0.5 pts): 2628.79
+
+```{r}
+
+mean(CASchools$students)
+
+
+```
+
 
 6. What is the standard deviation of number of computers? (0.5 pts): 441.34
 
+```{r}
+
+sd(CASchools$computer)
+
+
+```
+
+
 7. What does the calworks variable measure? Hint: Read the codebook! (0.5 pts): "Percent qualifying for CalWorks (income assistance)" 
 
-8. How many observations would it drop if you limited the sample to schools with 500+ students? (0.5 pts): We are left with 281 rows, meaning that we dropped 139 rows.  
+8. How many observations would it drop if you limited the sample to schools with 500+ students? (0.5 pts): We are left with 281 rows, meaning that we dropped 139 rows.
+
+```{r}
+
+drop <- CASchools %>% 
+        filter(students >= 500) %>% 
+        nrow()
+
+drop
+
+```
+
 
 ### Sort the data by number of students (ascending) and put the first 80 in the test set and
 the last 200 in the training set. Include only the following variables in the test/training set:
 students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our
 outcome variable is going to be the reading scores.
+
+```{r}
+
+CASchools$students <- as.numeric(CASchools$students)
+
+order <-CASchools %>% 
+        arrange(students) %>% 
+        select(students, teachers, calworks, lunch, computer, expenditure, income, english, read)
+
+test_CAS <- order[1:80,]
+  
+training_CAS <- order[220-420,]
+
+```
+
+9. Is there anything wrong with how we split our data into training and test datasets? (Note:
+do not change your dataset splits, this is purely a theoretical question) (0.5 pts)
+
+Yes, this is not good practice for actual randomization because it's not random. We might be training the data on patterns in the dataset by virtue of observation order rather than a representative sample of our data. If we were doing this for real, we would use the sample() function. 
+
+10. When you use your training data to build a linear model that regresses reading score on
+all other variables available in the data (plus an intercept), what is your test Mean Squared
+Error? (0.5 pts): MSE = 66.93 
+
+```{r}
+
+#build linear model: 
+
+model_10 <- lm(read ~ students + teachers + calworks + lunch + computer + expenditure + income + english, data = training_CAS)
+
+#find MSE: 
+
+anova(model_10)['Residuals', 'Mean Sq']
+
+```
+
+11. Now use your training data to build a linear model that regresses reading scores on number
+of students, teachers, and computers. What is the coefficient on computers (include an
+intercept). (0.5 pts): The intercept is 656.72 and the coefficient of computer is 0.02
+
+```{r}
+
+model_11 <- lm(read ~ students + teachers + computer, data = training_CAS)
+
+```
+
+12. Now do the same thing but regress reading scores on number of students, teachers, income,
+and computers (again, include an intercept). (0.5 pts)
+• What is the coefficient on computers now?: 0.01 (more specifically, 0.008396) 
+• What does that imply about the relationship between computers and income and reading
+scores and income?: For each one unit increase in reading score, income also increases by about 1.95. Number of computers and income are also positively correlated to reading scores, but since this regression is concerned with reading scores, it is better to say that as reading scores increase, income and number of computers also increases. 
+
+```{r}
+
+model_12 <- lm(read ~ students + teachers + income + computer, data = training_CAS)
+
+```
+
+13. When you use your training data to build a k-Nearest Neighbors model that regresses
+reading scores on all other features in the data, what is your test Mean Squared Error with
+k = 5? (0.5 pts): 234.64
+
+```{r}
+
+# read scores are the 9th column
+
+knn_m1    <- knn.reg(training_CAS[,-9],
+                     test_CAS[,-9],
+                     training_CAS[,9],
+                     k = 1)
+
+knn_m5   <- knn.reg(training_CAS[,-9],
+                    test_CAS[,-9],
+                    training_CAS[,9],
+                    k = 5)
+
+#find MSE: 
+
+mse_knn5 <- mean((knn_m5$pred - test_CAS[,9])^2)
+
+
+```
+
+When you use your training data to build a k-Nearest Neighbors model that regresses
+reading scores on all other features in the data, what is your test Mean Squared Error with
+k = 10? (0.5 pts): 304.36
+
+```{r}
+
+knn_m10   <- knn.reg(training_CAS[,-9],
+                    test_CAS[,-9],
+                    training_CAS[,9],
+                    k = 10)
+
+mse_knn10 <- mean((knn_m10$pred - test_CAS[,9])^2)
+
+
+```
 
 
 
