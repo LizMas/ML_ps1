@@ -511,9 +511,9 @@ summary {
 
 drop</code></pre>
 <pre><code>## [1] 281</code></pre>
-<div id="sort-the-data-by-number-of-students-ascending-and-put-the-first-80-in-the-test-set-and" class="section level3">
-<h3>Sort the data by number of students (ascending) and put the first 80 in the test set and</h3>
-<p>the last 200 in the training set. Include only the following variables in the test/training set: students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our outcome variable is going to be the reading scores.</p>
+<div id="sort-the-data-by-number-of-students-ascending-and-put-the-first-80-in-the-test-set-and-the-last-200-in-the-training-set.-include-only-the-following-variables-in-the-testtraining-set" class="section level3">
+<h3>Sort the data by number of students (ascending) and put the first 80 in the test set and the last 200 in the training set. Include only the following variables in the test/training set:</h3>
+<p>students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our outcome variable is going to be the reading scores.</p>
 <pre class="r"><code>CASchools$students &lt;- as.numeric(CASchools$students)
 
 order &lt;-CASchools %&gt;% 
@@ -522,13 +522,13 @@ order &lt;-CASchools %&gt;%
 
 test_CAS &lt;- order[1:80,]
   
-training_CAS &lt;- order[220-420,]</code></pre>
+training_CAS &lt;- order[220:420,]</code></pre>
 <ol start="9" style="list-style-type: decimal">
 <li>Is there anything wrong with how we split our data into training and test datasets? (Note: do not change your dataset splits, this is purely a theoretical question) (0.5 pts)</li>
 </ol>
 <p>Yes, this is not good practice for actual randomization because it’s not random. We might be training the data on patterns in the dataset by virtue of observation order rather than a representative sample of our data. If we were doing this for real, we would use the sample() function.</p>
 <ol start="10" style="list-style-type: decimal">
-<li>When you use your training data to build a linear model that regresses reading score on all other variables available in the data (plus an intercept), what is your test Mean Squared Error? (0.5 pts): MSE = 66.93</li>
+<li>When you use your training data to build a linear model that regresses reading score on all other variables available in the data (plus an intercept), what is your test Mean Squared Error? (0.5 pts): MSE = 34.11</li>
 </ol>
 <pre class="r"><code>#build linear model: 
 
@@ -537,17 +537,36 @@ model_10 &lt;- lm(read ~ students + teachers + calworks + lunch + computer + exp
 #find MSE: 
 
 anova(model_10)[&#39;Residuals&#39;, &#39;Mean Sq&#39;]</code></pre>
-<pre><code>## [1] 66.93064</code></pre>
+<pre><code>## [1] 34.10536</code></pre>
 <ol start="11" style="list-style-type: decimal">
-<li>Now use your training data to build a linear model that regresses reading scores on number of students, teachers, and computers. What is the coefficient on computers (include an intercept). (0.5 pts): The intercept is 656.72 and the coefficient of computer is 0.02</li>
+<li>Now use your training data to build a linear model that regresses reading scores on number of students, teachers, and computers. What is the coefficient on computers (include an intercept). (0.5 pts): The intercept is 655.92 and the coefficient of computer is 0.02</li>
 </ol>
-<pre class="r"><code>model_11 &lt;- lm(read ~ students + teachers + computer, data = training_CAS)</code></pre>
+<pre class="r"><code>model_11 &lt;- lm(read ~ students + teachers + computer, data = training_CAS)
+
+model_11</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = read ~ students + teachers + computer, data = training_CAS)
+## 
+## Coefficients:
+## (Intercept)     students     teachers     computer  
+##  655.939382    -0.005722     0.066012     0.016063</code></pre>
 <ol start="12" style="list-style-type: decimal">
-<li>Now do the same thing but regress reading scores on number of students, teachers, income, and computers (again, include an intercept). (0.5 pts) • What is the coefficient on computers now?: 0.01 (more specifically, 0.008396) • What does that imply about the relationship between computers and income and reading scores and income?: For each one unit increase in reading score, income also increases by about 1.95. Number of computers and income are also positively correlated to reading scores, but since this regression is concerned with reading scores, it is better to say that as reading scores increase, income and number of computers also increases.</li>
+<li>Now do the same thing but regress reading scores on number of students, teachers, income, and computers (again, include an intercept). (0.5 pts) • What is the coefficient on computers now?: 0.01 with an intercept of 620.30 • What does that imply about the relationship between computers and income and reading scores and income?: For each one unit increase in reading score, income also increases by about 1.95. Number of computers and income are also positively correlated to reading scores, but since this regression is concerned with reading scores, it is better to say that as reading scores increase, income and number of computers also increases.</li>
 </ol>
-<pre class="r"><code>model_12 &lt;- lm(read ~ students + teachers + income + computer, data = training_CAS)</code></pre>
+<pre class="r"><code>model_12 &lt;- lm(read ~ students + teachers + income + computer, data = training_CAS)
+
+model_12</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = read ~ students + teachers + income + computer, 
+##     data = training_CAS)
+## 
+## Coefficients:
+## (Intercept)     students     teachers       income     computer  
+##  620.295876     0.001504    -0.061946     2.177636     0.007856</code></pre>
 <ol start="13" style="list-style-type: decimal">
-<li>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 5? (0.5 pts): 234.64</li>
+<li>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 5? (0.5 pts): 405.03</li>
 </ol>
 <pre class="r"><code># read scores are the 9th column
 
@@ -563,14 +582,20 @@ knn_m5   &lt;- knn.reg(training_CAS[,-9],
 
 #find MSE: 
 
-mse_knn5 &lt;- mean((knn_m5$pred - test_CAS[,9])^2)</code></pre>
-<p>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 10? (0.5 pts): 304.36</p>
+mse_knn5 &lt;- mean((knn_m5$pred - test_CAS[,9])^2)
+
+mse_knn5</code></pre>
+<pre><code>## [1] 405.0264</code></pre>
+<p>When you use your training data to build a k-Nearest Neighbors model that regresses reading scores on all other features in the data, what is your test Mean Squared Error with k = 10? (0.5 pts): 364.90</p>
 <pre class="r"><code>knn_m10   &lt;- knn.reg(training_CAS[,-9],
                     test_CAS[,-9],
                     training_CAS[,9],
                     k = 10)
 
-mse_knn10 &lt;- mean((knn_m10$pred - test_CAS[,9])^2)</code></pre>
+mse_knn10 &lt;- mean((knn_m10$pred - test_CAS[,9])^2)
+
+mse_knn10</code></pre>
+<pre><code>## [1] 364.8958</code></pre>
 </div>
 </div>
 

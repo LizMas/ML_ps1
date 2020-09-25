@@ -2,7 +2,7 @@
 title: "API 222 Problem Set 1"
 author: "Liz Masten"
 date: "9/23/2020"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -65,7 +65,7 @@ TRUE - but it might have a higher variance due to overfitting, depending on the 
 (d) We should run our model multiple times and pick the one with the lowest test error.
 True or False?
 
-TRUE
+FALSE
 
 3. In two sentences or less, describe the bias variance tradeoff. (1 pt)
 
@@ -81,7 +81,7 @@ Variance is the amount by which $\hat{f}$ changes if estimated using different t
 
 data("CASchools")
 
-#commented out because this doesn't need to show up in the html: 
+#commented out because this doesn't need to show up in the pdf: 
 
 #dim(CASchools)
 
@@ -105,21 +105,21 @@ map(CASchools, ~sum(is.na(.)))
 ```
 
 
-5. What is the mean number of students in the school? (0.5 pts): 2628.79
+5. What is the mean number of students in the school? (0.5 pts):
 
 ```{r}
 
-mean(CASchools$students)
+mean(CASchools$students) %>% round(2)
 
 
 ```
 
 
-6. What is the standard deviation of number of computers? (0.5 pts): 441.34
+6. What is the standard deviation of number of computers? (0.5 pts):
 
 ```{r}
 
-sd(CASchools$computer)
+sd(CASchools$computer) %>% round(2)
 
 
 ```
@@ -140,8 +140,7 @@ drop
 ```
 
 
-### Sort the data by number of students (ascending) and put the first 80 in the test set and
-the last 200 in the training set. Include only the following variables in the test/training set:
+### Sort the data by number of students (ascending) and put the first 80 in the test set and the last 200 in the training set. Include only the following variables in the test/training set:
 students, teachers, calworks, lunch, computer, expenditure, income, english, and read. Our
 outcome variable is going to be the reading scores.
 
@@ -155,7 +154,7 @@ order <-CASchools %>%
 
 test_CAS <- order[1:80,]
   
-training_CAS <- order[220-420,]
+training_CAS <- order[221:420,]
 
 ```
 
@@ -166,7 +165,7 @@ Yes, this is not good practice for actual randomization because it's not random.
 
 10. When you use your training data to build a linear model that regresses reading score on
 all other variables available in the data (plus an intercept), what is your test Mean Squared
-Error? (0.5 pts): MSE = 66.93 
+Error? (0.5 pts):
 
 ```{r}
 
@@ -176,35 +175,46 @@ model_10 <- lm(read ~ students + teachers + calworks + lunch + computer + expend
 
 #find MSE: 
 
-anova(model_10)['Residuals', 'Mean Sq']
+predict_m10 <- predict(model_10, test_CAS[,-9])
+
+mse_m10 <- mean((predict_m10 - test_CAS[,9])^2) %>% round(2)
+
+mse_m10
 
 ```
 
 11. Now use your training data to build a linear model that regresses reading scores on number
 of students, teachers, and computers. What is the coefficient on computers (include an
-intercept). (0.5 pts): The intercept is 656.72 and the coefficient of computer is 0.02
+intercept). (0.5 pts): The intercept is 656.18 and the coefficient of computer is 0.02
 
 ```{r}
 
 model_11 <- lm(read ~ students + teachers + computer, data = training_CAS)
 
+model_11 
+
 ```
 
 12. Now do the same thing but regress reading scores on number of students, teachers, income,
 and computers (again, include an intercept). (0.5 pts)
-• What is the coefficient on computers now?: 0.01 (more specifically, 0.008396) 
+• What is the coefficient on computers now?: Coefficient on computers is now 0.01 with an intercept of 620.39
 • What does that imply about the relationship between computers and income and reading
-scores and income?: For each one unit increase in reading score, income also increases by about 1.95. Number of computers and income are also positively correlated to reading scores, but since this regression is concerned with reading scores, it is better to say that as reading scores increase, income and number of computers also increases. 
+scores and income?: 
+
+For each one unit increase in income, reading scores increase by about 2.18. For each one unit increase in number of computers, reading scores increase by 0.01. We can compare this to our model in question 11 which contained the computer variable but not the income variable. In model 11, the effect of number of computers was higher (0.02) which indicates that the income and computer variables are related and the coefficient for computer is lower in model 12 because income may be confounding the computer variable in model 11. 
+
 
 ```{r}
 
 model_12 <- lm(read ~ students + teachers + income + computer, data = training_CAS)
 
+model_12
+
 ```
 
 13. When you use your training data to build a k-Nearest Neighbors model that regresses
 reading scores on all other features in the data, what is your test Mean Squared Error with
-k = 5? (0.5 pts): 234.64
+k = 5? (0.5 pts):
 
 ```{r}
 
@@ -222,14 +232,16 @@ knn_m5   <- knn.reg(training_CAS[,-9],
 
 #find MSE: 
 
-mse_knn5 <- mean((knn_m5$pred - test_CAS[,9])^2)
+mse_knn5 <- mean((knn_m5$pred - test_CAS[,9])^2) %>% round(2)
+
+mse_knn5
 
 
 ```
 
 When you use your training data to build a k-Nearest Neighbors model that regresses
 reading scores on all other features in the data, what is your test Mean Squared Error with
-k = 10? (0.5 pts): 304.36
+k = 10? (0.5 pts):
 
 ```{r}
 
@@ -238,7 +250,9 @@ knn_m10   <- knn.reg(training_CAS[,-9],
                     training_CAS[,9],
                     k = 10)
 
-mse_knn10 <- mean((knn_m10$pred - test_CAS[,9])^2)
+mse_knn10 <- mean((knn_m10$pred - test_CAS[,9])^2) %>% round(2)
+
+mse_knn10
 
 
 ```
